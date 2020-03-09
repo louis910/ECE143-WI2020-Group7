@@ -4,10 +4,10 @@ import numpy as np
 
 class dataset:
 
-	steam_data = None
-	mobile_data = None
 	mobile = None
 	steam = None
+	mobile_raw = None
+	steam_raw = None
 
 	def __init__(self):
 		'''
@@ -41,15 +41,15 @@ class dataset:
 		'''
 		lack_m = set()
 		for num, item in enumerate(self.mobile['Primary Genre']):
-		    if (item != 'Games'):
-		        lack_m.add(num)
+			if (item != 'Games'):
+				lack_m.add(num)
 		self.mobile = self.mobile.drop(lack_m)
 	def modify_mobile_age(self):
 		'''
 		convert data in Age Rating column to int type
 		'''
 		for item in list(self.mobile['Age Rating']):
-		    item = int(item[0:-1])
+			item = int(item[0:-1])
 
 	def modify_mobile_language(self):
 		'''
@@ -59,10 +59,10 @@ class dataset:
 		'''
 		english = list()
 		for item in list(self.mobile['Languages']):
-		    if type(item) == float or 'EN' in item:
-		        english.append(1)
-		    else: 
-		        english.append(0)
+			if type(item) == float or 'EN' in item:
+				english.append(1)
+			else: 
+				english.append(0)
 		self.mobile.insert(2,'english', english)
 
 	def drop_mobile(self):
@@ -87,9 +87,9 @@ class dataset:
 		average_ratings = list()
 		rating_count = list()
 		for num in range(len(self.steam)):
-		    count = self.steam['positive_ratings'][num]+self.steam['negative_ratings'][num]
-		    rating_count.append(count)
-		    average_ratings.append(self.steam_raw['positive_ratings'][num]*5/count)
+			count = self.steam['positive_ratings'][num]+self.steam['negative_ratings'][num]
+			rating_count.append(count)
+			average_ratings.append(self.steam_raw['positive_ratings'][num]*5/count)
 		self.steam.insert(11,'average_ratings', average_ratings)
 		self.steam.insert(12,'rating_count', rating_count)
 
@@ -105,3 +105,49 @@ class dataset:
 		save steam data into a csv file
 		'''
 		self.steam.to_csv('../data/steam_modified.csv')
+
+	def add_month_yr_mobile(self):
+		'''Input:pd.DataFrame object
+		   Output:pd.DataFrame object
+		   table=pd.read_csv('fname')
+		'''
+		assert not self.mobile.empty
+		assert isinstance(self.mobile, pd.DataFrame)
+	
+		timecol = self.mobile['Original Release Date']
+		yr=[]
+		mon=[]
+		for item in timecol.iteritems():
+			ind1 = item[1].find('/')
+			ind2 = item[1].rfind('/')
+			mm = item[1][ind1+1:ind2]
+			mon.append(int(mm))
+			yy=item[1][ind2+1:ind2+5]
+			yr.append(int(yy))
+
+		self.mobile['Release Year'] = pd.Series(yr)
+		self.mobile['Release Month'] = pd.Series(mon)
+   
+	def add_month_yr_steam(self):
+		'''Input:pd.DataFrame object
+		   Output:pd.DataFrame object
+		   table=pd.read_csv('fname')
+		'''
+		assert not self.steam.empty
+		assert isinstance(self.steam, pd.DataFrame)
+	
+		timecol = self.steam['release_date']
+		yr = []
+		mon = []
+		for item in timecol.iteritems():
+			ind1 = item[1].find('-')
+			ind2 = item[1].rfind('-')
+			mm = item[1][ind1+1:ind2]
+			mon.append(int(mm))
+			yy = item[1][:ind1]
+			yr.append(int(yy))
+
+		self.steam['Release Year']=pd.Series(yr)
+		self.steam['Release Month']=pd.Series(mon)
+	
+
