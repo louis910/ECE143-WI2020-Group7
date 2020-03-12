@@ -1,6 +1,6 @@
-# Project Title
+# Preference in Games: PC vs. Mobile
 
-One Paragraph of project description goes here
+Developing a new game costs a lot of money and time for developer, so realizing the customers’ preference is really important before starting to develop. Therefore, we will analyze the trend of games on PC and mobile devices in the past decade and make comparison between preference of PC users and mobile users.
 
 ## Getting Started
 
@@ -8,29 +8,13 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+environment: 
+python
 
-```
-Give examples
-```
-
-### Installing
-
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
+modules:
+numpy
+pandas
+matplotlib
 
 ## Running the tests
 
