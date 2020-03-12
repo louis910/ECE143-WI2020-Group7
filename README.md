@@ -22,7 +22,7 @@ The steam dataset: https://www.kaggle.com/nikdavis/steam-store-games
 
 The mobile dataset: https://www.kaggle.com/tristan581/17k-apple-app-store-strategy-games
 
-### src
+### ② src
 
 This folder includes all our source codes.
 
@@ -88,7 +88,7 @@ Here are all functions and their purpose
 
 9. number_of_game_on_different_platforms: plot Number of Game on different Platforms
 
-### result
+### ③ result
 
 This folder includes our figures and tables for the presentation.
 
