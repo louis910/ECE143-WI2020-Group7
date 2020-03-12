@@ -16,57 +16,42 @@ numpy
 pandas
 matplotlib
 
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+### src
 
-## Built With
+This folder includes all our source codes.
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+#### main.ipynb
 
-## Contributing
+All parts of the project are executed here by importing modules.
+The notebook shows the ideas, the process and the results of our project.
+It would be the first thing to read to know about what we did.
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+#### datafile.py
 
-## Versioning
+This module is used to extract and clean up the dataset.
+In order to make two datasets comparable, we removed the contents which are irrelavent or useless, such as no-game apps, IDs or URLs.
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+Here are all functions and their purpose.
+
+For mobile dataset:
+remove_other_mobile_app: remove no-game apps
+modify_mobile_age: convert feature 'age' into int type
+modify_mobile_language: change 'Languages' column into 1/0 ("0" means non-English, "1" means English)
+drop_mobile: delete the useless columns
+save_mobile: save mobile data into a new csv file
+add_month_yr_mobile: change the original form of dates into years and months
+
+For steam dataset:
+normalize_steam_rating: convert binary ratings (positive/ negetive) into quantitative ratings (0-5)
+drop_steam: delete the useless columns.
+save_steam: save steam data into a new csv file
+add_month_yr_steam: change the original form of dates into years and months
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
-
+* **Jiayun Zhou** *
+* **Louis Lu** *
+* **Yuance Li** *
+* **Yue Geng** *
