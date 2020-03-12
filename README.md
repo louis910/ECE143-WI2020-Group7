@@ -18,17 +18,23 @@ matplotlib
 
 ## Deployment
 
+### data
+
+This folder includes two raw datasets from kaggle open datasets.
+The steam dataset: https://www.kaggle.com/nikdavis/steam-store-games
+The mobile dataset: https://www.kaggle.com/tristan581/17k-apple-app-store-strategy-games
+
 ### src
 
 This folder includes all our source codes.
 
-##### main.ipynb
+#### main.ipynb
 
 All parts of the project are executed here by importing modules.
 The notebook shows the ideas, the process and the results of our project.
 It would be the first thing to read to know about what we did.
 
-##### datafile.py
+#### datafile.py
 
 This module is used to extract and clean up the dataset.
 
@@ -60,7 +66,7 @@ For steam dataset:
 
 4. add_month_yr_steam: change the original form of dates into years and months
 
-##### analysis.py
+#### analysis.py
 
 This module is used to process, analyze and plot the data.
 
