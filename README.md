@@ -2,11 +2,7 @@
 
 Developing a new game costs a lot of money and time for developer, so realizing the customers’ preference is really important before starting to develop. Therefore, we will analyze the trend of games on PC and mobile devices in the past decade and make comparison between preference of PC users and mobile users.
 
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
+## Prerequisites
 
 environment: 
 python
@@ -72,9 +68,27 @@ This module is used to process, analyze and plot the data.
 
 Here are all functions and their purpose
 
-extract_series: extract data from dataframes/n
-get_column_name: print names of columns in dataframes
+1. extract_series: extract data from dataframes
 
+2. get_column_name: print names of columns in dataframes
+
+3. modify_inapp_price: calculate the average of 'in-app purchase' and update the data
+
+4. plot_price_without_inapp: plot of the price of steam vs the price of mobile (w/o in-app purchase) (blue: steam, red: mobile)
+
+5. plot_price_with_inapp: plot of the price of steam vs the price of mobile (w in-app purchase) (blue: steam, red: mobile)
+
+6. number_of_new_games_per_year: plot number of released games in each year
+
+7. number_of_new_games_per_month: plot the number of released games in each month
+
+8. average_price_in_each_year: plot the average price in each year
+
+9. number_of_game_on_different_platforms: plot Number of Game on different Platforms
+
+### result
+
+This folder includes our figures and tables for the presentation.
 
 ## Authors (ordered by names)
 
