@@ -14,7 +14,7 @@ matplotlib
 
 ## Deployment
 
-### data
+### ① data
 
 This folder includes two raw datasets from kaggle open datasets.
 
