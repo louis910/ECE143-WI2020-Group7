@@ -17,7 +17,9 @@ matplotlib
 ### data
 
 This folder includes two raw datasets from kaggle open datasets.
+
 The steam dataset: https://www.kaggle.com/nikdavis/steam-store-games
+
 The mobile dataset: https://www.kaggle.com/tristan581/17k-apple-app-store-strategy-games
 
 ### src
