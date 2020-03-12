@@ -38,27 +38,36 @@ Here are all functions and their purpose.
 
 For mobile dataset:
 
-remove_other_mobile_app: remove no-game apps
+1. remove_other_mobile_app: remove no-game apps
 
-modify_mobile_age: convert feature 'age' into int type
+2. modify_mobile_age: convert feature 'age' into int type
 
-modify_mobile_language: change 'Languages' column into 1/0 ("0" means non-English, "1" means English)
+3. modify_mobile_language: change 'Languages' column into 1/0 ("0" means non-English, "1" means English)
 
-drop_mobile: delete the useless columns
+4. drop_mobile: delete the useless columns
 
-save_mobile: save mobile data into a new csv file
+5. save_mobile: save mobile data into a new csv file
 
-add_month_yr_mobile: change the original form of dates into years and months
+6. add_month_yr_mobile: change the original form of dates into years and months
 
 For steam dataset:
 
-normalize_steam_rating: convert binary ratings (positive/ negetive) into quantitative ratings (0-5)
+1. normalize_steam_rating: convert binary ratings (positive/ negetive) into quantitative ratings (0-5)
 
-drop_steam: delete the useless columns.
+2. drop_steam: delete the useless columns
 
-save_steam: save steam data into a new csv file
+3. save_steam: save steam data into a new csv file
 
-add_month_yr_steam: change the original form of dates into years and months
+4. add_month_yr_steam: change the original form of dates into years and months
+
+##### analysis.py
+
+This module is used to process, analyze and plot the data.
+
+Here are all functions and their purpose
+
+extract_series: extract data from dataframes/n
+get_column_name: print names of columns in dataframes
 
 
 ## Authors (ordered by names)
