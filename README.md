@@ -92,6 +92,12 @@ Here are all functions and their purpose
 
 9. number_of_game_on_different_platforms: plot Number of Game on different Platforms
 
+10. outputtable_from_Df: create a figure in form of table from pandas DataFrame 
+
+11. Mobile_barplot_by_year: subplots of cumulative count of active users of each genre over years with corresponding percentage in each year for Mobile
+
+12. Steam_barplot_by_year: subplots of cumulative count of active users of each genre over years with corresponding percentage in each year for Steam
+
 ### ③ result
 
 This folder includes our figures and tables for the presentation.
