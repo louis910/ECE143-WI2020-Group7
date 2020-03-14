@@ -1,6 +1,6 @@
-# ECE 143     Preference in Games: PC vs. Mobile
+# ECE 143     Preference in Games: Steam vs. Mobile
 
-Developing a new game costs a lot of money and time for developer, so realizing the customers’ preference is really important before starting to develop. Therefore, we will analyze the trend of games on PC and mobile devices in the past decade and make comparison between preference of PC users and mobile users.
+Developing a new game costs a lot of money and time for developer, so realizing the customers’ preference is really important before starting to develop. Therefore, we will analyze the trend of games on Steam and mobile devices in the past decade and make comparison between preference of Steam users and mobile users.
 
 ## Prerequisites
 
