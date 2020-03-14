@@ -11,6 +11,9 @@ modules:
 numpy
 pandas
 matplotlib
+six
+seaborn
+
 
 ## Deployment
 
