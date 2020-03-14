@@ -1,7 +1,14 @@
 import pandas as pd
 import numpy as np
+import csv
+import matplotlib
+import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from datafile import dataset
+from sklearn.cluster import KMeans
+from sklearn.metrics.pairwise import pairwise_distances_argmin
+from sklearn.metrics import silhouette_score
+
 
 class analysis:
 	data = None
@@ -17,6 +24,8 @@ class analysis:
 	releaseTime_mobile = None
 	price_mobile = None
 	
+	mobile_part = None
+
 	def __init__(self):
 		self.data = dataset()
 		self.data.process()
@@ -24,6 +33,7 @@ class analysis:
 		self.data.add_month_yr_mobile()
 		self.extract_series()
 		self.modify_inapp_price()
+		self.mobile_part = self.data.mobile[self.data.mobile['Average User Rating'] > 0]
 
 	def extract_series(self):
 		'''
@@ -201,7 +211,7 @@ class analysis:
 		'''
 		plot Number of Game on different Platforms
 		'''
-		yr_steam = list(set(worker.data.steam['Release Year'].to_list()))
+		yr_steam = list(set(self.data.steam['Release Year'].to_list()))
 		windows = []
 		linux = []
 		mac = []
@@ -237,7 +247,7 @@ class analysis:
 
 
 		#mobile
-		yr_mobile = list(set(worker.data.mobile['Release Year'].to_list()))
+		yr_mobile = list(set(self.data.mobile['Release Year'].to_list()))
 		mobile = []
 		for item in yr_mobile[:-1]:
 		    mobile.append(len(self.data.mobile[self.data.mobile['Release Year']==item]))
@@ -258,3 +268,242 @@ class analysis:
 		plt.title('Number of Game on different Platforms')
 		#self.data.steam["platforms"]
 
+	def plot_rating_vs_count(self):
+		'''
+		plot figure about average rating score Vs. rating count
+		'''
+
+		df_steam = self.data.steam
+		plt.figure()
+		plt.scatter(df_steam["rating_count"], df_steam["average_ratings"], alpha=0.5)
+		plt.xscale("log")
+		plt.xlabel("Rating Count")
+		plt.ylabel("Average Rating")
+		plt.title("Steam: AverageRating - RatingCount")
+		plt.savefig("../result/steam_score_count.png")
+		plt.show()	
+
+		df_mobile = self.data.mobile
+		plt.figure()
+		plt.scatter(df_mobile['User Rating Count'], df_mobile['Average User Rating'], alpha=0.5)
+		plt.xscale("log")
+		plt.xlabel("Rating Count")
+		plt.ylabel("Average Rating")
+		plt.title("Mobile: AverageRating - RatingCount")
+		plt.savefig("../result/mobile_score_count.png")
+		plt.show()
+
+	def plot_k_means_SSE(self):
+
+		'''
+		plot SSE figure during K-means Clustering with different K
+		'''
+
+		clusterdata = np.transpose(np.vstack((self.data.steam['average_ratings'], np.log(self.data.steam['rating_count']))))
+		clusterdata_normed = clusterdata / clusterdata.max(axis=0)
+		features = clusterdata_normed
+		SSE = []  
+		Scores = []
+		for k in range(2,20):
+		    estimator = KMeans(n_clusters=k) 
+		    estimator.fit(features)
+		    SSE.append(estimator.inertia_)
+		X = range(2,20)
+		plt.xlabel('k(number of clusters)')
+		plt.ylabel('SSE')
+		plt.plot(X,SSE,'o-')
+		plt.title("SSE curve")
+		plt.xticks(np.arange(min(X), max(X)+1, 1.0))
+		plt.savefig("../result/cluster_SSE.png")
+
+	def steam_cluster_animation(self):
+		'''
+		generate animation of clustering on steam dataset
+		'''
+
+		clusterdata = np.transpose(np.vstack((self.data.steam['average_ratings'], np.log(self.data.steam['rating_count']))))
+		clusterdata_normed = clusterdata / clusterdata.max(axis=0)		
+		fig = plt.figure()		
+		def update(cnum):
+			plt.clf()
+			k_means = KMeans(n_clusters=cnum)
+			k_means.fit(clusterdata_normed)
+			k_means_cluster_centers = np.sort(k_means.cluster_centers_, axis=0) 
+			k_means_labels = pairwise_distances_argmin(clusterdata_normed, k_means_cluster_centers) 
+			if (cnum == 10):
+				np.save('../result/label10', k_means_labels)
+			c = self.data.steam[['average_ratings', 'rating_count']]
+			c['cluster'] = k_means_labels
+			slices = [c[c['cluster']==i] for i in range(cnum)]
+			plots = [plt.scatter(item['rating_count'], item['average_ratings'], alpha=0.3) for item in slices]
+			plt.xscale('log')
+			plt.title('Number of Clusters: '+str(cnum))
+			plt.xlim(0.5, 5000000)
+			plt.ylim(-0.5, 5.5)
+			return plots, 
+		ani = animation.FuncAnimation(fig, update, np.arange(2, 11), interval=1000)
+		ffmpegpath = "D:\\ffmpeg\\ffmpeg-20200311-36aaee2-win64-static\\bin\\ffmpeg.exe"
+		matplotlib.rcParams["animation.ffmpeg_path"] = ffmpegpath
+		writer = animation.FFMpegWriter(fps=1)
+		ani.save('../result/cluster.mp4', writer = writer)
+
+
+	def plot_10_cluster_map(self):
+		c = self.data.steam[['average_ratings', 'rating_count']]
+		c['cluster'] = np.load('../result/label10.npy')
+		slices = [c[c['cluster']==i] for i in range(10)]
+		plt.figure()
+		for item in slices:
+		    plt.scatter(item['rating_count'], item['average_ratings'], alpha=0.3)
+		plt.legend(['class '+str(i) for i,item in enumerate(slices)])
+		plt.xscale('log')
+		plt.xlabel('rating_count')
+		plt.ylabel('average_ratings')
+		plt.savefig('../result/steam_10.png')
+
+	def steam_generate_success(self):
+		'''
+		generate success label for steam data
+		'''
+		self.data.steam['cluster'] = np.load('../result/label10.npy')
+		self.data.steam['success'] = (self.data.steam['cluster'] >= 6)
+		self.data.steam['success'] = self.data.steam['success'].astype('int')
+
+
+	
+	def plot_steam_success(self):
+		c = self.data.steam[['average_ratings', 'rating_count', 'success']]
+		c['cluster'] = np.load('../result/label10.npy')
+		slices = [c[c['cluster']==i] for i in range(10)]
+		plt.figure()
+		c0 = c[c['success'] == 0]
+		c1 = c[c['success'] == 1]
+		plt.scatter(c0['rating_count'], c0['average_ratings'], alpha=0.3)
+		plt.scatter(c1['rating_count'], c1['average_ratings'], alpha=0.3)
+		plt.xscale('log')
+		plt.xlabel('rating_count')
+		plt.ylabel('average_ratings')
+		plt.legend(['successful', 'not successful'])
+		plt.savefig('../result/steam_10_2.png')		
+		plt.show()
+
+	def mobile_cluster_animation(self):
+		'''
+		generate animation of clustering on mobile dataset
+		'''
+
+		mobile = self.mobile_part
+		clusterdata = np.transpose(np.vstack((0.1+mobile['Average User Rating'], np.log(1+mobile['User Rating Count']))))
+		clusterdata_normed = clusterdata / clusterdata.max(axis=0)
+		fig = plt.figure()		 
+		def update(cnum):
+			plt.clf()
+			k_means = KMeans(n_clusters=cnum)
+			k_means.fit(clusterdata_normed)
+			k_means_cluster_centers = np.sort(k_means.cluster_centers_, axis=0) 
+			k_means_labels = pairwise_distances_argmin(clusterdata_normed, k_means_cluster_centers) 
+			if (cnum == 10):
+				np.save('../result/label10_m', k_means_labels)
+			c = mobile[['Average User Rating', 'User Rating Count']]
+			c['cluster'] = k_means_labels
+			slices = [c[c['cluster']==i] for i in range(cnum)]
+			plots = [plt.scatter(item['User Rating Count'], item['Average User Rating'], alpha=0.3) for item in slices]
+			plt.xscale('log')
+			plt.title('Number of Clusters: '+str(cnum))
+			plt.xlim(0.5, 5000000)
+			plt.ylim(0, 5.5)
+			return plots, 
+		ani = animation.FuncAnimation(fig, update, np.arange(2, 11), interval=1000)
+		ffmpegpath = "D:\\ffmpeg\\ffmpeg-20200311-36aaee2-win64-static\\bin\\ffmpeg.exe"
+		matplotlib.rcParams["animation.ffmpeg_path"] = ffmpegpath
+		writer = animation.FFMpegWriter(fps=1)
+		ani.save('../result/cluster_m.mp4', writer = writer)
+
+	def mobile_generate_success(self):
+		self.mobile_part['cluster'] = np.load('../result/label10_m.npy')
+		self.mobile_part['success'] = (self.mobile_part['cluster'] >= 6)
+		self.mobile_part['success'] = self.mobile_part['success'].astype('int')
+
+	def plot_mobile_success(self):
+
+		c = self.mobile_part[['User Rating Count','Average User Rating']]
+		c.fillna(0)
+		c = c[c['Average User Rating'] > 0]
+		c['cluster'] = np.load('../result/label10_m.npy')
+		slices = [c[c['cluster']==i] for i in range(10)]
+		plt.figure()
+		c0 = c[c['cluster'] >= 6]
+		c1 = c[c['cluster'] < 6]
+		plt.scatter(c0['User Rating Count'], c0['Average User Rating'], alpha=0.3)
+		plt.scatter(c1['User Rating Count'], c1['Average User Rating'], alpha=0.3)
+		plt.xscale('log')
+		plt.xlabel('rating_count')
+		plt.ylabel('average_ratings')
+		plt.legend(['successful', 'not successful'])
+		plt.savefig('../result/mobile_10_2.png')
+		plt.show()
+
+	def plot_price_Vs_success(self):
+		plt.figure()
+		plt.hist(self.data.steam[(self.data.steam['success']==0)]['price'], bins=100, alpha=0.5, normed=True)
+		plt.hist(self.data.steam[(self.data.steam['success']==1)]['price'], bins=100, alpha=0.3, normed=True)
+		plt.ylabel('Percentage')
+		plt.xlabel('Price/Dollar')
+		plt.title('Steam: Price Distribution')
+		plt.xscale('log')
+		plt.legend(['successful', 'not successful'])
+		plt.savefig('../result/steam_price.png')
+		plt.show()
+		plt.figure()
+		plt.hist(self.mobile_part[(self.mobile_part['success']==0)]['inapp_mobile'], bins=30, alpha=0.5, density=True)
+		plt.hist(self.mobile_part[(self.mobile_part['success']==1)]['inapp_mobile'], bins=30, alpha=0.3, density=True)
+		plt.ylabel('Percentage')
+		plt.xlabel('Price(with In-app)/Dollar')
+		plt.title('Mobile: Price Distribution')
+		plt.xscale('log')
+		plt.legend(['successful', 'not successful'])
+		plt.savefig('../result/mobile_price.png')
+		plt.show()
+
+	def plot_genres_Vs_success(self):
+		steam_g_list_0 = list()
+		for item in self.data.steam[self.data.steam['success']==0]['genres']:
+		    steam_g_list_0.extend(item.split(';'))
+		steam_df0 = pd.DataFrame(pd.value_counts(steam_g_list_0))
+		steam_g_list_1 = list()
+		for item in self.data.steam[self.data.steam['success']==1]['genres']:
+		    steam_g_list_1.extend(item.split(';'))
+		steam_df1 = pd.DataFrame(pd.value_counts(steam_g_list_1))
+		steam_df = pd.merge(steam_df1,steam_df0,left_index=True,right_index=True,how='inner')
+		steam_df.columns = ['successful', 'not successful']
+		steam_df['successful']
+		steam_df['not successful'] = steam_df['not successful'] / sum(steam_df['not successful'])
+		steam_df['successful'] = steam_df['successful'] / sum(steam_df['successful'])
+		plt.figure(figsize=(50, 80))
+		steam_df.sort_values(by='not successful', ascending=False)[0:15].plot(kind='bar')
+		plt.xticks(rotation=75)
+		plt.title('Steam: Genres')
+		plt.ylabel("Percentage")
+		plt.savefig('../result/steam_genres.png', dpi=200, bbox_inches='tight')		
+		plt.show()
+
+		mobile_g_list_0 = list()
+		for item in self.mobile_part[self.mobile_part['success']==0]['Genres']:
+		    mobile_g_list_0.extend(item.split(', '))
+		mobile_df0 = pd.DataFrame(pd.value_counts(mobile_g_list_0))
+		mobile_g_list_1 = list()
+		for item in self.mobile_part[self.mobile_part['success']==1]['Genres']:
+		    mobile_g_list_1.extend(item.split(', '))
+		mobile_df1 = pd.DataFrame(pd.value_counts(mobile_g_list_1))
+		mobile_df = pd.merge(mobile_df1,mobile_df0,left_index=True,right_index=True,how='inner')
+		mobile_df.columns = ['successful', 'not successful']
+		mobile_df['successful']
+		mobile_df['not successful'] = mobile_df['not successful'] / sum(mobile_df['not successful'])
+		mobile_df['successful'] = mobile_df['successful'] / sum(mobile_df['successful'])
+		plt.figure(figsize=(50, 80))
+		mobile_df.sort_values(by='not successful', ascending=False)[1:16].plot(kind='bar')
+		plt.xticks(rotation=75)
+		plt.title('Mobile: Genres')
+		plt.ylabel("Percentage")
+		plt.savefig('../result/mobile_genres.png', dpi=200, bbox_inches='tight')
+		plt.show()
