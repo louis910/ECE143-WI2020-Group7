@@ -12,3 +12,6 @@ result/cluster.mp4
 src/gy_test.ipynb
 src/animation_mobile.py
 *.npy
+src/animation.py
+result/README.md
+src/.ipynb_checkpoints/main-checkpoint.ipynb
