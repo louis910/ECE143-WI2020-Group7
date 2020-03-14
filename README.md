@@ -6,6 +6,7 @@ Developing a new game costs a lot of money and time for developer, so realizing 
 
 environment: 
 python
+ffmpeg
 
 modules:
 numpy
