@@ -498,7 +498,7 @@ class part2:
 		figps1.savefig("Price_vs_rating_steam.png")
 
 
-	def plot_active_user_Vs_price_mobile(self):
+	def plot_active_user_Vs_price(self):
 		sns.set()
 
 		Rating_cat=[]

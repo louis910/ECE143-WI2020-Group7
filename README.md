@@ -26,6 +26,8 @@ The steam dataset: https://www.kaggle.com/nikdavis/steam-store-games
 
 The mobile dataset: https://www.kaggle.com/tristan581/17k-apple-app-store-strategy-games
 
+Download and put the '.csv' files under the './data' folder
+
 ### ② src
 
 This folder includes all our source codes.
@@ -72,7 +74,11 @@ For steam dataset:
 
 This module is used to process, analyze and plot the data.
 
+It contains 2 different classes which represent different procedure in our analysis
+
 Here are all functions and their purpose
+
+part1:
 
 1. extract_series: extract data from dataframes
 
@@ -80,27 +86,60 @@ Here are all functions and their purpose
 
 3. modify_inapp_price: calculate the average of 'in-app purchase' and update the data
 
-4. plot_price_without_inapp: plot of the price of steam vs the price of mobile (w/o in-app purchase) (blue: steam, red: mobile)
+4. plot_price_with_inapp_Vs_time: Plot the figure of the price of steam vs the price of mobile games
+	- blue dots: price of steam
+	- green dots: price of steam with in-app purchase
+	- red dots: price of mobile without in-app purchase
 
-5. plot_price_with_inapp: plot of the price of steam vs the price of mobile (w in-app purchase) (blue: steam, red: mobile)
+5. plot_rating_Vs_count: plot of the average rating score Vs. rating count
 
-6. number_of_new_games_per_year: plot number of released games in each year
+6. plot_k_means_SSE: Sum of squared error of K-means Clustering with K differs
 
-7. number_of_new_games_per_month: plot the number of released games in each month
+7. steam_cluster_animation: generate animation of clustering on steam dataset
 
-8. average_price_in_each_year: plot the average price in each year
+8. plot_10_cluster_map: show clustering result when K=10 on steam dataset
 
-9. number_of_game_on_different_platforms: plot Number of Game on different Platforms
+9. steam_generate_success: use clustering result generating a new label called 'success' on steam dataset
 
-10. outputtable_from_Df: create a figure in form of table from pandas DataFrame 
+10. plot_steam_success: plot the new 'success' feature on steam dataset
 
-11. Mobile_barplot_by_year: subplots of cumulative count of active users of each genre over years with corresponding percentage in each year for Mobile
+11. mobile_cluster_animation: generate animation of clustering on mobile dataset
 
-12. Steam_barplot_by_year: subplots of cumulative count of active users of each genre over years with corresponding percentage in each year for Steam
+12. mobile_generate_success: use clustering result generating a new label called 'success' on mobile dataset
+
+13. plot_mobile_success: plot the new 'success' feature on mobile dataset
+
+14. plot_price_Vs_success: show the distribution of price according to 'success' label on both datasets
+
+15. plot_genres_Vs_success: show the distribution of popular genres according to 'success' label on both datasets
+
+part2: (if not specially mentioned, the functions are applying on both dataset at the same call)
+
+1. steam_rename: rename the columns of steam dataframe in order to be consistent with modile dataframe
+
+2. extract_rate_per_year: extract data with different ratings in every year
+
+3. plot_number_Vs_year: plot the number of new games in every year and use different colors for different ratings
+
+4. plot_rate_percentage: show the percentage of each rating level
+
+5. plot_rating_Vs_price: plot of average rating score Vs. price
+
+6. plot_active_user_Vs_price: plot of active user number Vs. price
+
+7. prepare_data: prepare data for analysis on each genre
+
+8. plot_positive_count: plot of positive rated user count Vs. all rated user count for each genre
+
+9. plot_developed_Vs_active_user: plot of number of games developed Vs. active user count for each genre
+
+10. plot_user_count_Vs_genres: plot of top 10 genres with highest percentage of rating count
+
+11. generate_animation_for_genres: generate animations to demonstrate the change of each genre in different year
 
 ### ③ result
 
-This folder includes our figures and tables for the presentation.
+This folder includes our figures and animations for the presentation slide. When display figures and animations in main.ipynb, results will be saved here automatically at the same time. 
 
 ## Authors (ordered by names)
 
