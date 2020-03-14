@@ -28,10 +28,12 @@ class dataset:
 		self.remove_other_mobile_app()
 		self.modify_mobile_age()
 		self.modify_mobile_language()
-		self.drop_mobile()
-		self.save_mobile()
 		self.normalize_steam_rating()
+		self.steam.fillna(0)
+		self.mobile.fillna(0)
+		self.drop_mobile()
 		self.drop_steam()
+		self.save_mobile()
 		self.save_steam()
 
 	def remove_other_mobile_app(self):
