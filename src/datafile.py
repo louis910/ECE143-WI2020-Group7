@@ -6,31 +6,27 @@ class dataset:
 
 	mobile = None
 	steam = None
-	mobile_raw = None
-	steam_raw = None
 
 	def __init__(self):
 		'''
 		load raw data from csv files
 		'''
-		raw_m = pd.read_csv('../data/appstore_games.csv')
-		raw_s = pd.read_csv('../data/steam.csv')
+		self.mobile = pd.read_csv('../data/appstore_games.csv')
+		self.steam = pd.read_csv('../data/steam.csv')
 
-		self.mobile_raw = raw_m[:]
-		self.steam_raw = raw_s[:]
-		self.mobile = self.mobile_raw
-		self.steam = self.steam_raw
 
 	def process(self):
 		'''
 		process raw data and save to new csv files
 		'''
-		self.remove_other_mobile_app()
 		self.modify_mobile_age()
 		self.modify_mobile_language()
 		self.normalize_steam_rating()
 		self.steam.fillna(0)
 		self.mobile.fillna(0)
+		self.add_month_yr_steam()
+		self.add_month_yr_mobile()
+		self.remove_other_mobile_app()
 		self.drop_mobile()
 		self.drop_steam()
 		self.save_mobile()
@@ -91,7 +87,7 @@ class dataset:
 		for num in range(len(self.steam)):
 			count = self.steam['positive_ratings'][num]+self.steam['negative_ratings'][num]
 			rating_count.append(count)
-			average_ratings.append(self.steam_raw['positive_ratings'][num]*5/count)
+			average_ratings.append(self.steam['positive_ratings'][num]*5/count)
 		self.steam.insert(11,'average_ratings', average_ratings)
 		self.steam.insert(12,'rating_count', rating_count)
 
@@ -116,19 +112,17 @@ class dataset:
 		assert not self.mobile.empty
 		assert isinstance(self.mobile, pd.DataFrame)
 	
-		timecol = self.mobile['Original Release Date']
 		yr=[]
 		mon=[]
-		for item in timecol.iteritems():
-			ind1 = item[1].find('/')
-			ind2 = item[1].rfind('/')
-			mm = item[1][ind1+1:ind2]
+		for item in self.mobile['Original Release Date']:
+			mm = item.split('/')[1]
 			mon.append(int(mm))
-			yy=item[1][ind2+1:ind2+5]
+			yy = item.split('/')[2]
 			yr.append(int(yy))
-
 		self.mobile['Release Year'] = pd.Series(yr)
 		self.mobile['Release Month'] = pd.Series(mon)
+
+
    
 	def add_month_yr_steam(self):
 		'''Input:pd.DataFrame object
