@@ -113,7 +113,9 @@ part1:
 
 15. plot_genres_Vs_success: show the distribution of popular genres according to 'success' label on both datasets
 
-part2: (if not specially mentioned, the functions are applying on both dataset at the same call)
+part2: 
+
+(if not specially mentioned, the functions are applying on both dataset at the same call)
 
 1. steam_rename: rename the columns of steam dataframe in order to be consistent with modile dataframe
 
