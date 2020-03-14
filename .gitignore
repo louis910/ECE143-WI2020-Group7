@@ -1,3 +1,14 @@
 
 *.pyc
 *.csv
+*.png
+*.htm
+src/.ipynb_checkpoints/gy_test-checkpoint.ipynb
+result/README.md
+result/README.md
+result/label10_m.npy
+result/cluster.mp4
+*.mp4
+src/gy_test.ipynb
+src/animation_mobile.py
+*.npy
